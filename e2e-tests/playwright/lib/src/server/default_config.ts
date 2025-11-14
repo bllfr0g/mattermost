@@ -560,6 +560,7 @@ const defaultServerConfig: AdminConfig = {
         MobileJailbreakProtection: false,
         MobileEnableSecureFilePreview: false,
         MobileAllowPdfLinkNavigation: false,
+        EnableIntuneMAM: false,
     },
     CacheSettings: {
         CacheType: 'lru',
