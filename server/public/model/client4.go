@@ -7514,7 +7514,7 @@ func (c *Client4) GetJobsByType(ctx context.Context, jobType string, page int, p
 	values := url.Values{}
 	values.Set("page", strconv.Itoa(page))
 	values.Set("per_page", strconv.Itoa(perPage))
-	routeURL, err := c.jobsRoute().JoinSegment("type").JoinId(jobType).URL()
+	routeURL, err := c.jobsRoute().JoinSegment("type").JoinJobType(jobType).URL()
 	if err != nil {
 		return nil, nil, err
 	}

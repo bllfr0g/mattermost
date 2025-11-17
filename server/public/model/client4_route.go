@@ -112,6 +112,15 @@ func (r clientRoute) JoinEmojiname(v string) clientRoute {
 	return r.JoinSegment(v)
 }
 
+func (r clientRoute) JoinJobType(v string) clientRoute {
+	if !IsValidJobType(v) {
+		r.err = fmt.Errorf("%q is not a valid job type", v)
+		return r
+	}
+
+	return r.JoinSegment(v)
+}
+
 func (r clientRoute) URL() (*url.URL, error) {
 	if r.err != nil {
 		return nil, r.err
