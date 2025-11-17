@@ -2283,11 +2283,11 @@ func (c *Client4) EnableBot(ctx context.Context, botUserId string) (*Bot, *Respo
 
 // AssignBot assigns the given bot to the given user
 func (c *Client4) AssignBot(ctx context.Context, botUserId, newOwnerId string) (*Bot, *Response, error) {
-	route, err := c.botRoute(botUserId).JoinSegment("assign").String()
+	route, err := c.botRoute(botUserId).JoinSegment("assign").JoinId(newOwnerId).String()
 	if err != nil {
 		return nil, nil, err
 	}
-	r, err := c.DoAPIPost(ctx, route+newOwnerId, "")
+	r, err := c.DoAPIPost(ctx, route, "")
 	if err != nil {
 		return nil, BuildResponse(r), err
 	}
@@ -2981,11 +2981,11 @@ func (c *Client4) InvalidateEmailInvites(ctx context.Context) (*Response, error)
 
 // GetTeamInviteInfo returns a team object from an invite id containing sanitized information.
 func (c *Client4) GetTeamInviteInfo(ctx context.Context, inviteId string) (*Team, *Response, error) {
-	route, err := c.teamsRoute().JoinSegment("invite").String()
+	route, err := c.teamsRoute().JoinSegment("invite").JoinId(inviteId).String()
 	if err != nil {
 		return nil, nil, err
 	}
-	r, err := c.DoAPIGet(ctx, route+inviteId, "")
+	r, err := c.DoAPIGet(ctx, route, "")
 	if err != nil {
 		return nil, BuildResponse(r), err
 	}
@@ -4419,11 +4419,11 @@ func (c *Client4) FlagPostForContentReview(ctx context.Context, postId string, f
 }
 
 func (c *Client4) GetContentFlaggedPost(ctx context.Context, postId string) (*Post, *Response, error) {
-	route, err := c.contentFlaggingRoute().JoinSegment("post").String()
+	route, err := c.contentFlaggingRoute().JoinSegment("post").JoinId(postId).String()
 	if err != nil {
 		return nil, nil, err
 	}
-	r, err := c.DoAPIGet(ctx, route+postId, "")
+	r, err := c.DoAPIGet(ctx, route, "")
 	if err != nil {
 		return nil, BuildResponse(r), err
 	}
@@ -4614,11 +4614,11 @@ func (c *Client4) SearchPostsWithMatches(ctx context.Context, teamId string, ter
 
 // DoPostAction performs a post action.
 func (c *Client4) DoPostAction(ctx context.Context, postId, actionId string) (*Response, error) {
-	route, err := c.postRoute(postId).JoinSegment("actions").String()
+	route, err := c.postRoute(postId).JoinSegment("actions").JoinId(actionId).String()
 	if err != nil {
 		return nil, err
 	}
-	r, err := c.DoAPIPost(ctx, route+actionId, "")
+	r, err := c.DoAPIPost(ctx, route, "")
 	if err != nil {
 		return BuildResponse(r), err
 	}
@@ -4628,12 +4628,13 @@ func (c *Client4) DoPostAction(ctx context.Context, postId, actionId string) (*R
 
 // DoPostActionWithCookie performs a post action with extra arguments
 func (c *Client4) DoPostActionWithCookie(ctx context.Context, postId, actionId, selected, cookieStr string) (*Response, error) {
+	route, err := c.postRoute(postId).JoinSegment("actions").JoinId(actionId).String()
+	if err != nil {
+		return nil, err
+	}
+
 	if selected == "" && cookieStr == "" {
-		route, err := c.postRoute(postId).JoinSegment("actions").String()
-		if err != nil {
-			return nil, err
-		}
-		r, err := c.DoAPIPost(ctx, route+actionId, "")
+		r, err := c.DoAPIPost(ctx, route, "")
 		if err != nil {
 			return BuildResponse(r), err
 		}
@@ -4645,11 +4646,7 @@ func (c *Client4) DoPostActionWithCookie(ctx context.Context, postId, actionId, 
 		SelectedOption: selected,
 		Cookie:         cookieStr,
 	}
-	route, err := c.postRoute(postId).JoinSegment("actions").String()
-	if err != nil {
-		return nil, err
-	}
-	r, err := c.DoAPIPostJSON(ctx, route+actionId, req)
+	r, err := c.DoAPIPostJSON(ctx, route, req)
 	if err != nil {
 		return BuildResponse(r), err
 	}
@@ -9663,11 +9660,11 @@ func (c *Client4) GetFilteredUsersStats(ctx context.Context, options *UserCountO
 }
 
 func (c *Client4) RestorePostVersion(ctx context.Context, postId, versionId string) (*Post, *Response, error) {
-	route, err := c.postRoute(postId).JoinSegment("restore").String()
+	route, err := c.postRoute(postId).JoinSegment("restore").JoinId(versionId).String()
 	if err != nil {
 		return nil, nil, err
 	}
-	r, err := c.DoAPIPost(ctx, route+versionId, "")
+	r, err := c.DoAPIPost(ctx, route, "")
 	if err != nil {
 		return nil, BuildResponse(r), err
 	}
