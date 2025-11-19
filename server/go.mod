@@ -4,6 +4,7 @@ go 1.24.6
 
 require (
 	code.sajari.com/docconv/v2 v2.0.0-pre.4
+	github.com/JohannesKaufmann/html-to-markdown/v2 v2.4.0
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/anthonynsimon/bild v0.14.0
 	github.com/avct/uasurfer v0.0.0-20250915105040-a942f6fb6edc
@@ -31,7 +32,6 @@ require (
 	github.com/hashicorp/memberlist v0.5.3
 	github.com/icrowley/fake v0.0.0-20240710202011-f797eb4a99c0
 	github.com/isacikgoz/prompt v0.1.0
-	github.com/jaytaylor/html2text v0.0.0-20230321000545-74c2419ad056
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/klauspost/compress v1.18.0
 	github.com/ledongthuc/pdf v0.0.0-20250511090121-5959a4027728
@@ -40,6 +40,7 @@ require (
 	github.com/mattermost/gosaml2 v0.10.0
 	github.com/mattermost/ldap v0.0.0-20231116144001-0f480c025956
 	github.com/mattermost/logr/v2 v2.0.22
+	github.com/mattermost/mattermost-plugin-ai v1.5.0
 	github.com/mattermost/mattermost/server/public v0.1.20
 	github.com/mattermost/morph v1.1.0
 	github.com/mattermost/rsc v0.0.0-20160330161541-bbaefb05eaa0
@@ -67,11 +68,11 @@ require (
 	github.com/wiggin77/merror v1.0.5
 	github.com/xtgo/uuid v0.0.0-20140804021211-a0b114877d4c
 	github.com/yuin/goldmark v1.7.13
-	golang.org/x/crypto v0.43.0
+	golang.org/x/crypto v0.44.0
 	golang.org/x/image v0.32.0
-	golang.org/x/net v0.46.0
-	golang.org/x/sync v0.17.0
-	golang.org/x/term v0.36.0
+	golang.org/x/net v0.47.0
+	golang.org/x/sync v0.18.0
+	golang.org/x/term v0.37.0
 	gopkg.in/mail.v2 v2.3.1
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -79,6 +80,7 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/JalfResi/justext v0.0.0-20221106200834-be571e3e3052 // indirect
+	github.com/JohannesKaufmann/dom v0.2.0 // indirect
 	github.com/PuerkitoBio/goquery v1.10.3 // indirect
 	github.com/STARRY-S/zip v0.2.3 // indirect
 	github.com/advancedlogic/GoOse v0.0.0-20231203033844-ae6b36caf275 // indirect
@@ -117,6 +119,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/google/btree v1.1.3 // indirect
+	github.com/google/jsonschema-go v0.2.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
@@ -132,6 +135,7 @@ require (
 	github.com/hashicorp/yamux v0.1.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/isacikgoz/fuzzy v0.2.0 // indirect
+	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
@@ -139,7 +143,6 @@ require (
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/levigross/exp-html v0.0.0-20120902181939-8df60c69a8f5 // indirect
-	github.com/mattermost/mattermost-plugin-ai v1.5.0 // indirect
 	github.com/mattermost/xml-roundtrip-validator v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -194,8 +197,8 @@ require (
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
 	golang.org/x/exp v0.0.0-20251009144603-d2f985daa21b // indirect
 	golang.org/x/mod v0.29.0 // indirect
-	golang.org/x/sys v0.37.0 // indirect
-	golang.org/x/text v0.30.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 	golang.org/x/tools v0.38.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251007200510-49b9836ed3ff // indirect
 	google.golang.org/grpc v1.76.0 // indirect
@@ -209,7 +212,11 @@ require (
 	modernc.org/sqlite v1.39.1 // indirect
 )
 
-// Also prevent tablewriter from being upgraded because the downstream dependency
-// jaytaylor/html2text does not have a go.mod file which makes it bump to the latest
-// version always. Tablewriter has made breaking changes to its latest release.
+// Prevent tablewriter from being upgraded because the downstream dependency 
+// code.sajari.com/docconv/v2 has am indirect dependency on jaytaylor/html2text via 
+// advancedlogic/GoOse. jaytaylor/html2text does not have a go.mod file which makes 
+// it bump to the latest version always. Tablewriter has made breaking changes to its 
+// latest release.
+// There is a proposed PR to fix this for GoOse we should monitor: 
+// https://github.com/advancedlogic/GoOse/pull/77
 replace github.com/olekukonko/tablewriter => github.com/olekukonko/tablewriter v0.0.5
