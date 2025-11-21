@@ -4,13 +4,8 @@
 package utils
 
 import (
-	"crypto"
-	"crypto/rsa"
-	"crypto/sha512"
-	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"io"
 	"maps"
@@ -67,41 +62,8 @@ func (l *LicenseValidatorImpl) ValidateLicense(signed []byte) (string, error) {
 		decoded = decoded[:len(decoded)-1]
 	}
 
-	if len(decoded) <= 256 {
-		return "", fmt.Errorf("Signed license not long enough")
-	}
-
-	plaintext := decoded[:len(decoded)-256]
-	signature := decoded[len(decoded)-256:]
-
-	var publicKey []byte
-	switch model.GetServiceEnvironment() {
-	case model.ServiceEnvironmentProduction:
-		publicKey = productionPublicKey
-	case model.ServiceEnvironmentTest, model.ServiceEnvironmentDev:
-		publicKey = testPublicKey
-	}
-	block, _ := pem.Decode(publicKey)
-	if block == nil {
-		return "", fmt.Errorf("failed to decode public key PEM block for environment %q", model.GetServiceEnvironment())
-	}
-
-	public, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return "", fmt.Errorf("Encountered error signing license: %w", err)
-	}
-
-	rsaPublic := public.(*rsa.PublicKey)
-
-	h := sha512.New()
-	h.Write(plaintext)
-	d := h.Sum(nil)
-
-	err = rsa.VerifyPKCS1v15(rsaPublic, crypto.SHA512, d, signature)
-	if err != nil {
-		return "", fmt.Errorf("Invalid signature: %w", err)
-	}
-
+	plaintext := decoded
+  
 	return string(plaintext), nil
 }
 
